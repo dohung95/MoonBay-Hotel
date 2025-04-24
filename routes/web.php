@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\DB;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/{any}', function () {
-    return view('app');
-})->where('any', '.*');
 Route::get('/db-test', function () {
     try {
         DB::connection()->getPdo();
@@ -25,3 +21,6 @@ Route::get('/db-test', function () {
         return '❌ Error: ' . $e->getMessage();
     }
 });
+Route::get('/{any}', function () {
+    return view('app');
+})->where('any', '.*');

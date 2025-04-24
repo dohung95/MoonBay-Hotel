@@ -16,7 +16,7 @@ const Rooms = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8000/api/room_types')
+      .get('https://laravel-react-app-wgss.onrender.com/api/room_types') //http://localhost:8000/api/room_types
       .then((response) => setRooms(response.data))
       .catch((error) => console.error('Error fetching room_types:', error))
       .finally(() => setLoading(false));

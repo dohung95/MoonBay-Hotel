@@ -3,6 +3,8 @@ FROM node:18-alpine as build
 
 # Cài đặt các công cụ hệ thống cần thiết
 RUN apk add --no-cache curl git bash
+RUN docker-php-ext-install pdo pdo_mysql
+
 
 # Copy source code vào container
 WORKDIR /var/www/html

@@ -1,23 +1,33 @@
-FROM composer:latest AS composer
+# Bắt đầu từ image Node.js chính thức
+FROM node:18-alpine as build
 
-# Copy source
+# Cài đặt các công cụ hệ thống cần thiết
+RUN apk add --no-cache curl git bash
+
+# Copy source code vào container
 WORKDIR /var/www/html
 COPY . .
 
-# Cài Composer packages
+# Cài đặt Node packages và build ứng dụng React với Vite
+RUN npm install
+RUN npm run build
+
+# Cài đặt PHP (sử dụng image chính thức của PHP)
+FROM php:8.1-fpm
+
+# Cài Composer và các công cụ Laravel cần thiết
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copy ứng dụng Laravel từ build image sang
+COPY --from=build /var/www/html /var/www/html
+
+# Cài các package của PHP cần thiết
+WORKDIR /var/www/html
 RUN composer install --optimize-autoloader --no-dev
 
-# Cài Node & build Vite
-RUN apt update && apt install -y curl gnupg unzip git npm \
-    && npm install \
-    && npm run build
-
-# Laravel setup
-RUN cp .env.example .env \
-    && php artisan key:generate \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Cài đặt .env nếu chưa có và tạo key Laravel
+RUN cp .env.example .env
+RUN php artisan key:generate
 
 # Chạy ứng dụng Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]

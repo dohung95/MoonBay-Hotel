@@ -24,8 +24,16 @@ COPY --from=build /var/www/html /var/www/html
 
 WORKDIR /var/www/html
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Cài đặt Laravel
 RUN composer install --optimize-autoloader --no-dev
+
+# Thiết lập Laravel
 RUN cp .env.example .env
 RUN php artisan key:generate
 
+# 👉 Clear và cache config để tránh lỗi cấu hình trên Render
+RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache
+
+# Khởi chạy Laravel
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]

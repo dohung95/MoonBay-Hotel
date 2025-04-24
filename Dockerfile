@@ -15,8 +15,12 @@ RUN npm run build
 # Cài đặt PHP (sử dụng image chính thức của PHP)
 FROM php:8.1-fpm
 
-# Cài Composer và các công cụ Laravel cần thiết
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Cài Composer và các package cần thiết cho PHP
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    curl \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copy ứng dụng Laravel từ build image sang
 COPY --from=build /var/www/html /var/www/html

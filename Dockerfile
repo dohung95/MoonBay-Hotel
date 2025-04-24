@@ -1,19 +1,3 @@
-# Bắt đầu từ image Node.js chính thức
-FROM node:18-alpine as build
-
-# Cài đặt các công cụ hệ thống cần thiết
-RUN apk add --no-cache curl git bash
-RUN docker-php-ext-install pdo pdo_mysql
-
-
-# Copy source code vào container
-WORKDIR /var/www/html
-COPY . .
-
-# Cài đặt Node packages và build ứng dụng React với Vite
-RUN npm install
-RUN npm run build
-
 # Cài đặt PHP (sử dụng image chính thức của PHP)
 FROM php:8.1-fpm
 
@@ -22,7 +6,11 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    && docker-php-ext-install pdo_mysql
 
 # Copy ứng dụng Laravel từ build image sang
 COPY --from=build /var/www/html /var/www/html

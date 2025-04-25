@@ -9,10 +9,15 @@ class RoomController extends Controller
 {
     public function index()
     {
-        // Lấy tất cả các loại phòng
-        $roomTypes = RoomType::all();
-
-        // Trả về dữ liệu dưới dạng JSON
-        return response()->json($roomTypes);
+        try {
+            $roomTypes = RoomType::all();
+            return response()->json($roomTypes);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'Serialization error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
+    
 }

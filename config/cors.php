@@ -17,21 +17,18 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Các phương thức bạn muốn cho phép
+    'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'https://your-frontend-domain.com', // Thay đổi domain frontend của bạn
-        'https://laravel-react-app-wgss.onrender.com' // Domain của ứng dụng backend
-    ],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Content-Type', 'Authorization', 'X-Requested-With'],  // Các header bạn muốn cho phép
+    'allowed_headers' => ['*'],
 
     'exposed_headers' => [],
 
     'max_age' => 0,
 
-    'supports_credentials' => true,  // Nếu bạn sử dụng cookie hoặc xác thực
-];
+    'supports_credentials' => false,
 
+];

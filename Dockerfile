@@ -34,10 +34,6 @@ RUN php artisan key:generate
 
 # 👉 Clear và cache config để tránh lỗi cấu hình trên Render
 RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache
-ADD https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 /cloud_sql_proxy
-RUN chmod +x /cloud_sql_proxy
 
 # Khởi chạy Laravel
-CMD ["sh", "-c", "/cloud_sql_proxy -instances=your-project:region:instance=tcp:3306 -credential_file=/etc/secrets/cloudsql.json & php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8080"]
-
-
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]

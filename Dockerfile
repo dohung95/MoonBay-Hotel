@@ -6,9 +6,10 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-# Stage 2: Laravel backend
+# Stage 2: Laravel backend + cloud-sql-proxy
 FROM php:8.1-fpm
 
+# Cài các gói cần thiết
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -19,21 +20,29 @@ RUN apt-get update && apt-get install -y \
     zip \
     && docker-php-ext-install pdo_mysql
 
-# Copy app từ stage `build`
+# Tải Cloud SQL Proxy
+ADD https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.9.0/cloud-sql-proxy.linux.amd64 /usr/local/bin/cloud-sql-proxy
+RUN chmod +x /usr/local/bin/cloud-sql-proxy
+
+# Copy app từ stage build
 COPY --from=build /var/www/html /var/www/html
 
 WORKDIR /var/www/html
+
+# Cài Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Cài đặt Laravel
+# Cài Laravel dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Thiết lập Laravel
+# Laravel setup
 RUN cp .env.example .env
 RUN php artisan key:generate
-
-# 👉 Clear và cache config để tránh lỗi cấu hình trên Render
 RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache
 
-# Khởi chạy Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+# Copy start.sh
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Chạy Laravel qua script khởi động
+CMD ["start.sh"]

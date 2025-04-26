@@ -1,0 +1,17 @@
+envVars:
+  - key: DB_CONNECTION
+    value: mysql
+  - key: DB_HOST
+    value: 127.0.0.1
+  - key: DB_PORT
+    value: 3306
+  - key: DB_DATABASE
+    value: moonbay
+  - key: DB_USERNAME
+    value: root
+  - key: DB_PASSWORD
+    value: 123456
+  - key: GOOGLE_CREDENTIALS_JSON
+    sync: false   
+  - key: INSTANCE_CONNECTION_NAME
+    value: inspired-data-457811-k5:asia-southeast1:dohung95
